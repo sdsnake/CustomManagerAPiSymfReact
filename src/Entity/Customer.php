@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -14,8 +15,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  * @ApiResource(
+ *     collectionOperations={"GET","POST"},
+ *     itemOperations={"GET","PUT","DELETE"},
+ *     subresourceOperations={
+ *       "invoices_get_subresource"={"path"="/customers/{id}/invoices"}
+ *     },
  *     normalizationContext={
-            "groups"={"customers_read"}
+ *      "groups"={"customers_read"}
  *     }
  * )
  * @ApiFilter(SearchFilter::class)
@@ -58,12 +64,13 @@ class Customer
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
      * @Groups({"customers_read"})
+     * @ApiSubresource
      */
     private $invoices;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="Customers")
-     * @Groups({"customers_read", "invoices_read"})
+     * @Groups({"customers_read","invoices_read"})
      */
     private $user;
 
