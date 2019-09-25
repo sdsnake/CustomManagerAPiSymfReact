@@ -16,6 +16,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "normalization_context"={"groups" = {"invoices_subresource"}}
  *     }
  *     },
+ *  itemOperations={"GET","PUT","DELETE","increment"={
+ *     "method"= "post",
+ *     "path"="/invoices/{id}/increment",
+ *     "controller"="App\Controller\InvoiceIncrementationController",
+ *     "swagger_context"={
+ *          "summary"= "Incremente une facture",
+ *          "description"="increment le chrono d'une facture donnée"
+ *      }
+ *     }
+ *    },
  *  attributes={
  * "pagination_enabled"=true,
  *  "pagination_items_per_page"= 20,
@@ -72,6 +82,15 @@ class Invoice
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * Permet de recuperer le User gestionnaire de la facture
+     * @Groups({"invoices_read","invoices_subresource"})
+     * @return User
+     */
+    public function getUser(): User{
+        return  $this->customer->getUser();
     }
 
     public function getAmount(): ?float
